@@ -1,12 +1,13 @@
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 def compute_similarity(user_embedding, synopsis_embeddings):
     """Compute cosine similarity between user input and all book synopses."""
     similarity_scores = cosine_similarity(user_embedding, synopsis_embeddings).flatten()
     return similarity_scores
 
-def get_top_matches(similarity_scores, df, top_n=10, page_number = 1, score_threshold = 0.0):
+def get_top_matches(similarity_scores, df, top_n=10, page_number = 1, score_threshold = 36.6):
     """Return top N book recommendations based on similarity scores."""
 
     top_indices = np.argsort(similarity_scores)[::-1]
@@ -30,3 +31,12 @@ def get_top_matches(similarity_scores, df, top_n=10, page_number = 1, score_thre
         {"book_name": df.iloc[idx]["book_name"], "summary": df.iloc[idx]["summaries"], "score": float(similarity_scores[idx])}
         for idx in paged_indices
     ], "total_pages": total_pages}
+
+
+
+def get_synopsis_embeddings(df):
+    from model import get_embedding
+    """Compute embeddings for all book synopses and store in a list."""
+    
+    embeddings = [get_embedding(text) for text in df["summaries"]]
+    return embeddings

@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from model import get_model, load_data
+from model import get_model, load_data, get_embedding
 from utils import compute_similarity, get_top_matches
 
 # Create a Blueprint for routes
@@ -19,7 +19,7 @@ def search():
 
     #encode user input
     model = get_model()
-    user_embeddings = model.encode(user_input, convert_to_numpy=True).reshape(1,-1)
+    user_embeddings = get_embedding(user_input).reshape(1,-1)
 
     #compute similarity scores
     similarity_scores = compute_similarity(user_embeddings, synopsis_embeddings)
